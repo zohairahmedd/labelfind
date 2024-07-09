@@ -11,6 +11,12 @@ KEYWORDS = {
 }
 
 def count_keywords(directory_path):
+    """
+    counts the occurrence of keywords within json file(s) located in the specified directory
+
+    parameters:
+    - directory_path (str): path to the directory containing the json file(s).
+    """
     keyword_counts = KEYWORDS.copy()
 
     LUpEyelid = 0
