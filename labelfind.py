@@ -1,6 +1,9 @@
 import os
 import json
 import argparse
+import csv
+
+header = 0
 
 KEYWORDS = {
     "LUpEyelid": 0,
@@ -19,19 +22,24 @@ def main():
         none
     """
     parser = argparse.ArgumentParser(description='processing some video.') # necessary for implementing command-line
-    parser.add_argument('input_directory', type=str, help='path to json files') # adds argument input_directory to the parser
+    parser.add_argument('--input_directory', '-id', type=str, help='path to json files') # adds argument input_directory to the parser
+    parser.add_argument('--csv_file', '-cf', type=str, help='name of csv file') # adds argument csv_file
 
     args = parser.parse_args() # allows us to use the arguments in the parser (args.argument_name)
 
-    count_keywords(args.input_directory) 
+    count_keywords(args.input_directory, args.csv_file) 
 
-def count_keywords(input_directory):
+def count_keywords(input_directory, csv_file):
     """
     counts the occurrence of keywords within json file(s) located in the specified directory
 
     parameters:
-    - input_directory (str): path to the directory containing the json file(s).
+    - input_directory (str): path to the directory containing the json file(s)
+    - csv_file (str): name of csv file
     """
+
+    global header
+
     keyword_counts = KEYWORDS.copy()
 
     LUpEyelid = 0
@@ -71,6 +79,31 @@ def count_keywords(input_directory):
                         RCornea += keyword_count
                     if keyword == 'LCornea':
                         LCornea += keyword_count
+
+                # data for CSV file
+                data = {
+                    "Filename: \n": filename,
+                    " RCornea: ": RCornea,
+                    " LCornea: ": LCornea,
+                    " RUpEyelid: ": RUpEyelid,
+                    " LUpEyelid: ": LUpEyelid,
+                    " RLowEyelid: ": RLowEyelid,
+                    " LLowEyelid: ": LLowEyelid
+                }
+
+                csv_name = csv_file
+
+                # write data to CSV file
+                if header == 0:
+                    with open(csv_name, mode="a", newline='') as file:
+                        file.write("Frame_Num, RCornea, LCornea, RUpEyelid, LUpEyelid, RLowEyelid, LLowEyelid\n")
+                        header += 1
+                        file.close()
+                
+                with open(csv_name, mode='a', newline='') as file:
+                    writer = csv.DictWriter(file, fieldnames=list(data.keys()))
+                    writer.writerow(data)
+                    file.close()
 
             print(f"LUpEyelid: {LUpEyelid}, LLowEyelid: {LLowEyelid}, RUpEyelid: {RUpEyelid}, RLowEyelid: {RLowEyelid}, RCornea: {RCornea}, LCornea: {LCornea}\n")
             
