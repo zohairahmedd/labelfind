@@ -1,5 +1,6 @@
 import os
 import json
+import argparse
 
 KEYWORDS = {
     "LUpEyelid": 0,
@@ -10,12 +11,26 @@ KEYWORDS = {
     "LCornea": 0,
 }
 
-def count_keywords(directory_path):
+def main():
+    """
+    take command line arguments input for the paths of both the location of video and directory to store frames
+
+    arguments:
+        none
+    """
+    parser = argparse.ArgumentParser(description='processing some video.') # necessary for implementing command-line
+    parser.add_argument('input_directory', type=str, help='path to json files') # adds argument input_directory to the parser
+
+    args = parser.parse_args() # allows us to use the arguments in the parser (args.argument_name)
+
+    count_keywords(args.input_directory) 
+
+def count_keywords(input_directory):
     """
     counts the occurrence of keywords within json file(s) located in the specified directory
 
     parameters:
-    - directory_path (str): path to the directory containing the json file(s).
+    - input_directory (str): path to the directory containing the json file(s).
     """
     keyword_counts = KEYWORDS.copy()
 
@@ -27,9 +42,9 @@ def count_keywords(directory_path):
     RCornea = 0
     
     # iterate over all files in the directory
-    for filename in os.listdir(directory_path):
+    for filename in os.listdir(input_directory):
         if filename.endswith(".json"):
-            filepath = os.path.join(directory_path, filename) # if the file ends with ".json", construct the full path to the file
+            filepath = os.path.join(input_directory, filename) # if the file ends with ".json", construct the full path to the file
             
             # open and read the json file
             with open(filepath, 'r') as file: # open in reading mode
@@ -66,12 +81,9 @@ def count_keywords(directory_path):
             RCornea = 0
             LCornea = 0
 
-    return keyword_counts
-
-if __name__ == "__main__":
-    directory_path = 'D:\\work\\Segmentation_code_Scripts4Zohair\\datasets\\Training_images_horse_eyes' # absolute path
-    keyword_counts = count_keywords(directory_path)
-    
     print("Number of Keywords Found:")
     for keyword, count in keyword_counts.items():
         print(f"{keyword}: {count}")
+    
+if __name__ == "__main__":
+    main()
