@@ -16,7 +16,7 @@ KEYWORDS = {
 
 def main():
     """
-    take command line arguments input for the paths of both the location of video and directory to store frames
+    take command line arguments input for the paths of both the location of the file(s) and name of csv file
 
     arguments:
         none
@@ -82,7 +82,7 @@ def count_keywords(input_directory, csv_file):
 
                 # data for CSV file
                 data = {
-                    "Filename: \n": filename,
+                    "Filename: ": filename,
                     " RCornea: ": RCornea,
                     " LCornea: ": LCornea,
                     " RUpEyelid: ": RUpEyelid,
@@ -96,7 +96,7 @@ def count_keywords(input_directory, csv_file):
                 # write data to CSV file
                 if header == 0:
                     with open(csv_name, mode="a", newline='') as file:
-                        file.write("Frame_Num, RCornea, LCornea, RUpEyelid, LUpEyelid, RLowEyelid, LLowEyelid\n")
+                        file.write("Filename, RCornea, LCornea, RUpEyelid, LUpEyelid, RLowEyelid, LLowEyelid\n")
                         header += 1
                         file.close()
                 
